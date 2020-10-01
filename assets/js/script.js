@@ -2,13 +2,6 @@ var past_task_color = "#d3d3d3";
 var current_task_color = "#ff6961";
 var future_task_color = "#77dd77";
 
-// Add a class on an html element using vanilla javascript
-// var jumbotron = document.querySelector(".jumbotron");
-// jumbotron.className = "hello";
-// jumbotron.classList.add("hello");
-
-// var jumbotron = $(".jumbotron");
-// jumbotron.addClass("hello");
 
 var currentDate = moment().format("dddd, MMMM Do");
 $("#currentDay").text(currentDate);
@@ -25,7 +18,7 @@ function setTimeSlotColors() {
       timeSlots[i].style.backgroundColor = current_task_color;
     } else if (parseInt(timeSlots[i].id) > parseInt(currentTime)) {
       timeSlots[i].style.backgroundColor = future_task_color;
-    } else if (parseInt(timeSlots[i].id) < parseInt(currentTime)) {
+    } else if (parseInt(timeSlots[i].id) <    parseInt(currentTime)) {
       timeSlots[i].style.backgroundColor = past_task_color;
     }
   }
@@ -50,26 +43,37 @@ function getStoredTasks() {
 
 $(".to-do").on("click", function () {
   $(".save-button").each(function (index, element) {
-    element.style.opacity = 0.2;
-  });
+      element.style.opacity = 0.2;
+  })
 
   $(this).parent().children(".save-button")[0].style.opacity = 1;
+
+  $(".form-control").each(function (index, element) {
+      element.style.visibility = "hidden";
+  })
+
+  var formZoneID = "#input-form-" + ($(this)[0].id);
+  $(formZoneID)[0].style.visibility = "visible";
 });
 
 $(".save-button").on("click", function () {
   $(".save-button").each(function (index, element) {
-    element.style.opacity = 0.7;
-  });
+      element.style.opacity = (0.7);
+  })
 
-  var currentTaskForm = $(this).siblings(".to-do").children(".description")[0];
 
+  var currentTaskForm = $(this).parent().children(".to-do").children(".form-control")[0];
+
+  var currentP = $(this).parent().children(".to-do").children(".display-text")[0];
   var taskDescription = currentTaskForm.value;
 
+  currentP.textContent = taskDescription;
   currentTaskForm.style.visibility = "hidden";
 
   var currentTask = {
-    task: taskDescription,
-  };
+      "pID": currentP.id,
+      "task": taskDescription
+  }
   tasks.push(currentTask);
   localStorage.setItem("tasks", JSON.stringify(tasks));
 });
@@ -78,6 +82,7 @@ $("#remove-tasks").on("click", function () {
   localStorage.clear();
   location.reload();
 });
+
 
 setTimeSlotColors();
 getStoredTasks();
